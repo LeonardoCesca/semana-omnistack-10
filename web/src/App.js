@@ -7,7 +7,7 @@ import './Sidebar.css';
 import './Main.css';
 
 function App() {
-
+  const [devs, setDevs] = useState([]);
   const [github_username, setGithubUsername] = useState('');
   const [techs, setTechs] = useState('');
 
@@ -29,6 +29,15 @@ function App() {
         timeout: 30000,
       }
     )
+  }, []);
+
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+      setDevs(response.data);
+    }
+
+    loadDevs();
   }, []);
 
   async function handleAddDev(e) {
@@ -102,50 +111,19 @@ function App() {
       </aside>
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/22780548?s=460&v=4" alt="Leonardo Cesca" />
-              <div className="user-info">
-                <strong>Leonardo Cesca</strong>
-                <span>React, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Jovem sonhador.</p>
-            <a href="https://github.com/leonardocesca">Acessar perfil no Github</a>
-          </li>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/22780548?s=460&v=4" alt="Leonardo Cesca" />
-              <div className="user-info">
-                <strong>Leonardo Cesca</strong>
-                <span>React, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Jovem sonhador.</p>
-            <a href="https://github.com/leonardocesca">Acessar perfil no Github</a>
-          </li>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/22780548?s=460&v=4" alt="Leonardo Cesca" />
-              <div className="user-info">
-                <strong>Leonardo Cesca</strong>
-                <span>React, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Jovem sonhador.</p>
-            <a href="https://github.com/leonardocesca">Acessar perfil no Github</a>
-          </li>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/22780548?s=460&v=4" alt="Leonardo Cesca" />
-              <div className="user-info">
-                <strong>Leonardo Cesca</strong>
-                <span>React, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Jovem sonhador.</p>
-            <a href="https://github.com/leonardocesca">Acessar perfil no Github</a>
-          </li>
+          {devs.map(dev => (
+            <li className="dev-item">
+              <header>
+                <img src={dev.avatar_url} alt={dev.name} />
+                <div className="user-info">
+                  <strong>{dev.name}</strong>
+                  <span>{dev.techs.join(', ')}</span>
+                </div>
+              </header>
+              <p>{dev.bio}</p>
+              <a href={`https://github.com/${dev.github_username}`}>Acessar perfil no Github</a>
+            </li>
+          ))}
         </ul>
       </main>
     </div>
